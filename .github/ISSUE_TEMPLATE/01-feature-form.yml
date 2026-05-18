@@ -1,0 +1,25 @@
+name: ✨ Feature
+description: Suggest a new Selfcoder capability or workflow improvement.
+type: "Feature"
+projects: ["coderoomstudio/9"]
+body:
+  - type: textarea
+    id: feature-description
+    attributes:
+      label: Feature Description
+      description: Briefly describe the feature and its purpose.
+      placeholder: |
+        e.g. Add a context preview panel that shows which active files, pinned files, diagnostics, and recent changes Selfcoder will send to the selected local model.
+    validations:
+      required: true
+  - type: textarea
+    id: acceptance-criteria
+    attributes:
+      label: Acceptance Criteria
+      description: Define the list of necessary conditions for accepting the final solution.
+      placeholder: |
+        - [ ] The new behavior works in the Selfcoder sidepanel.
+        - [ ] It behaves correctly with both LM Studio and Ollama backends, or documents any backend-specific limits.
+        - [ ] The UI copy explains the behavior without exposing internal implementation details.
+    validations:
+      required: true

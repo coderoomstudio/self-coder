@@ -1,0 +1,26 @@
+name: 🐞 Bug Form
+description: Report a Selfcoder problem in VS Code, LM Studio, Ollama, or local model workflows.
+type: "Bug"
+projects: ["coderoomstudio/9"]
+body:
+  - type: textarea
+    id: bug-steps
+    attributes:
+      label: Steps to Reproduce
+      description: List the steps to reproduce the bug.
+      placeholder: |
+        1. Start LM Studio or Ollama and load the model you were using.
+        2. Open the Selfcoder sidepanel or use @Selfcoder in VS Code Chat.
+        3. Send the prompt, attach the file/image, or select the model that triggers the issue.
+        4. Note what happened, including any error message, missing model, stalled stream, or unexpected context.
+    validations:
+      required: true
+  - type: textarea
+    id: bug-expected
+    attributes:
+      label: Expected Behavior
+      description: Describe the expected behavior or output when the bug is fixed.
+      placeholder: |
+        e.g. Selfcoder should connect to Ollama at http://localhost:11434, list the available chat models, and stream the response in the sidepanel without losing the pinned file context.
+    validations:
+      required: true
