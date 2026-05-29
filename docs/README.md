@@ -9,7 +9,7 @@ Selfcoder is designed for developers who want practical AI assistance inside VS 
 | Guide | What it covers |
 | --- | --- |
 | [Getting Started](getting-started.md) | Install Selfcoder, connect LM Studio or Ollama, and send your first message. |
-| [Core Workflows](core-workflows.md) | Use the sidepanel chat, `@Selfcoder` in native VS Code Chat, local models in the model picker, and optional agent workflows. |
+| [Core Workflows](core-workflows.md) | Use the sidepanel chat, Agent mode, `@Selfcoder` in native VS Code Chat, and local models in the VS Code model picker. |
 | [Context and Attachments](context-and-attachments.md) | Understand pinned files, editor context, diagnostics, attachments, vision models, workspace instructions, and token budgeting. |
 | [Models and Backends](models-and-backends.md) | Choose between LM Studio and Ollama, select useful models, and understand model capabilities. |
 | [Settings and Privacy](settings-and-privacy.md) | Configure Selfcoder behavior, privacy mode, history, reasoning, vision, and workspace context. |
@@ -18,6 +18,7 @@ Selfcoder is designed for developers who want practical AI assistance inside VS 
 ## What You Can Do With Selfcoder
 
 - Chat with local models from a dedicated VS Code sidepanel.
+- Switch the sidepanel into Agent mode to let a local model read files, make edits, and run commands across your workspace, with change tracking and one-click revert.
 - Use local models through LM Studio or Ollama.
 - Ask questions about the current file, selected code, diagnostics, recent work, or repository changes.
 - Pin files into the conversation context when a task needs specific source files.

@@ -96,7 +96,7 @@ Selfcoder can include workspace-specific instructions automatically.
 
 It looks for the first matching instruction file in this priority order:
 
-1. `local-instruction.md`
+1. `local-instruction.md` (or `local-instructions.md`)
 2. `copilot-instructions.md`
 3. `CLAUDE.MD`
 

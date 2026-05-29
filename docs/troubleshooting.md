@@ -66,6 +66,16 @@ Check:
 
 If the participant still does not appear, reload VS Code.
 
+## Agent Mode Issues
+
+Agent mode runs an autonomous agent (OpenCode) that Selfcoder downloads and manages automatically on first use.
+
+If Agent mode does not start:
+
+- Open a folder or workspace first. Agent mode needs a workspace to act on and is disabled when no folder is open.
+- Select a tool-capable model. Agent mode requires a model that reports tool-use support; if the selected model does not, switch to one that does.
+- Make sure your backend is connected and the model is available.
+
 ## Image Attachments Are Rejected
 
 Image support requires all of the following:

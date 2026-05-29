@@ -103,5 +103,5 @@ If a model appears in the Selfcoder sidepanel but not in VS Code's native model 
 - For quick explanations, use a smaller coding model.
 - For larger refactors, use a larger model with more context.
 - For UI screenshots, choose a vision-capable model.
-- For native Agent mode, choose a tool-capable model.
+- For Agent mode, choose a tool-capable model.
 - For long conversations, watch the token indicator and start a new chat when the topic shifts.

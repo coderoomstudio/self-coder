@@ -41,6 +41,8 @@ All settings are under the `Selfcoder` namespace.
 | `Selfcoder.historyScope` | `global` | Shows all saved conversations or only conversations for the current repository. |
 | `Selfcoder.historyRetention` | `100` | Sets the maximum number of conversations kept in history. |
 | `Selfcoder.contextMode` | `enabled` | Enables or disables automatic editor and workspace context. |
+| `Selfcoder.agent.command` | empty | Explicit path to an OpenCode executable for Agent mode. Overrides the managed binary and PATH detection. |
+| `Selfcoder.agent.autoDownload` | `true` | Automatically download and manage the Agent mode runtime on first use. |
 
 ## Backend URL
 
@@ -107,7 +109,7 @@ Workspace instruction files let you define project-specific behavior without rep
 
 Selfcoder checks for:
 
-1. `local-instruction.md`
+1. `local-instruction.md` (or `local-instructions.md`)
 2. `copilot-instructions.md`
 3. `CLAUDE.MD`
 

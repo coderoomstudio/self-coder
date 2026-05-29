@@ -65,7 +65,7 @@ Typical flow:
 
 1. Open VS Code Chat.
 2. Type `@Selfcoder` followed by your request.
-3. Selfcoder uses the configured backend and the current session default model.
+3. Selfcoder answers using the active backend and the model selected in the Selfcoder sidepanel.
 4. The answer streams inside native VS Code Chat.
 
 Example:
@@ -76,13 +76,12 @@ Example:
 
 The native participant uses Selfcoder's backend configuration, system prompt, workspace instructions and request-scoped context pipeline.
 
-## Session Default Model
+## Model Used By `@Selfcoder`
 
-The native chat participant uses a session default model shown in the VS Code status bar.
+The native participant shares the sidepanel's model selection. Whatever model you select in the Selfcoder sidepanel is the model `@Selfcoder` uses.
 
-When Selfcoder is connected, click the Selfcoder status bar item to choose the default model for native chat. This choice is runtime-only, so it may reset after VS Code reloads.
+If you have not selected a sidepanel model yet, or the selected model is hidden, filtered, or unavailable for the active backend, the participant falls back to the first available chat model from the backend.
 
-The sidepanel has its own model selection and can be used independently.
 
 ## Local Models In The VS Code Model Picker
 
@@ -99,13 +98,34 @@ Use this workflow when you want:
 
 If a model does not appear in the native model picker, see [Troubleshooting](troubleshooting.md#model-does-not-appear-in-the-vs-code-model-picker).
 
-## Optional OpenCode Agent Mode
+## Agent Mode
 
-Selfcoder can work with an installed OpenCode CLI for users who want deeper workspace automation.
+The Selfcoder sidepanel has two modes, switched with the Chat/Agent control in the composer header:
 
-Use this when you want a more agentic workflow that can inspect files, propose changes, show activity, and work through a larger coding task.
+- **Chat** — the local-model chat described above.
+- **Agent** — an autonomous coding agent that can read files, make edits, and run commands in your workspace.
 
-OpenCode is optional. Selfcoder's regular sidepanel and native chat workflows do not require it.
+Use Agent mode when you want the model to work through a larger task end to end instead of answering a single question.
+
+Agent mode adds:
+
+- a live activity timeline showing the agent's reads, searches, edits, and commands
+- change tracking with per-file `+N/-M` counts
+- in-editor diff visualization of the agent's edits
+- one-click revert for a single file or the whole session
+- interactive permission prompts before sensitive actions
+
+Agent mode runs on the model you select in the sidepanel and the active backend, so agent work stays on your machine. The selected model must support tool use; if it does not, pick a tool-capable model before running the agent.
+
+
+Typical flow:
+
+1. Open the Selfcoder sidepanel.
+2. Select a tool-capable model.
+3. Switch the composer mode to **Agent**.
+4. Describe the task, for example "add input validation to the signup form and update the tests".
+5. Watch the activity timeline and approve any permission prompts.
+6. Review the changed files and revert anything you do not want to keep.
 
 ## Choosing The Right Workflow
 
@@ -114,7 +134,8 @@ OpenCode is optional. Selfcoder's regular sidepanel and native chat workflows do
 | Ask about the current file | Sidepanel chat |
 | Use selected text as context | Sidepanel chat |
 | Ask from VS Code's built-in chat UI | `@Selfcoder` |
-| Use local models in native Agent mode | VS Code model picker |
+| Use local models in VS Code's own Agent mode | VS Code model picker |
 | Attach files or images manually | Sidepanel chat |
 | Resume older conversations | Sidepanel chat history |
-| Work through a larger automated coding task | Sidepanel chat with installed OpenCode |
+| Let the model edit files and run commands | Agent mode |
+| Work through a larger automated coding task | Agent mode |

@@ -1,13 +1,13 @@
 # Selfcoder
 
-**A VS Code extension for chatting with local AI models using LM Studio or Ollama.**
+**A VS Code extension for agent workflow with local AI models using LM Studio or Ollama.**
 
 Selfcoder brings a local-first AI coding assistant into Visual Studio Code. It connects to your own LM Studio or Ollama backend, lets you choose the model that fits your machine, and keeps coding conversations close to your workspace.
 
 This repository is the public home for Selfcoder documentation, Marketplace installation details, and issue tracking.
 
 <p align="center">
-  <a href="https://marketplace.visualstudio.com/items?itemName=Coderoom.Selfcoder">
+  <a href="https://marketplace.visualstudio.com/items?itemName=coderoom.Selfcoder">
     <img alt="VS Code Marketplace" src="https://img.shields.io/badge/marketplace-Selfcoder-007ACC">
   </a>
   <a href="https://github.com/coderoomstudio/self-coder/issues"><img alt="GitHub Issues" src="https://img.shields.io/github/issues/coderoomstudio/self-coder"></a>
@@ -55,11 +55,12 @@ Project documentation is available in the [`docs`](docs/) directory.
 
 Useful starting points:
 
-- [Features](docs/features.md)
-- [Backend support](docs/backend-support.md)
-- [Context strategy](docs/context-strategy.md)
-- [Native chat participant](docs/native-chat-participant.md)
-- [Language model provider](docs/language-model-provider.md)
+- [Getting Started](docs/getting-started.md)
+- [Core Workflows](docs/core-workflows.md)
+- [Context and Attachments](docs/context-and-attachments.md)
+- [Models and Backends](docs/models-and-backends.md)
+- [Settings and Privacy](docs/settings-and-privacy.md)
+- [Troubleshooting](docs/troubleshooting.md)
 
 ## Reporting Issues
 
