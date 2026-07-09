@@ -1,1 +1,8 @@
 blank_issues_enabled: false
+contact_links:
+  - name: 🌐 Selfcoder website
+    url: https://selfcoder.dev
+    about: Install, features, and general information.
+  - name: 💜 Support Selfcoder
+    url: https://github.com/sponsors/coderoomstudio
+    about: Selfcoder is free. Sponsorship is voluntary and keeps it maintained.
