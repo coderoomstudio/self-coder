@@ -97,8 +97,11 @@ Selfcoder can include workspace-specific instructions automatically.
 It looks for the first matching instruction file in this priority order:
 
 1. `local-instruction.md` (or `local-instructions.md`)
-2. `copilot-instructions.md`
-3. `CLAUDE.MD`
+2. `.github/copilot-instructions.md`
+3. `AGENTS.md` (or `AGENTS.MD`)
+4. `CLAUDE.md` (or `CLAUDE.MD`)
+
+Agent mode also uses deeper discovery and includes instructions from the folders which are closer to the current context, while chat mode uses only the root-level discovery. This allows you to have different instructions for different subfolders in a repository.
 
 Use workspace instructions for stable project rules, such as:
 

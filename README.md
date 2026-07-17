@@ -10,6 +10,9 @@ This repository is the public home for Selfcoder documentation, Marketplace inst
   <a href="https://marketplace.visualstudio.com/items?itemName=coderoom.Selfcoder">
     <img alt="VS Code Marketplace" src="https://img.shields.io/badge/marketplace-Selfcoder-007ACC">
   </a>
+  <a href="https://selfcoder.dev">
+    <img alt="Selfcoder Website" src="https://img.shields.io/badge/website-selfcoder.dev-2f6f9f">
+  </a>
   <a href="https://github.com/coderoomstudio/self-coder/issues"><img alt="GitHub Issues" src="https://img.shields.io/github/issues/coderoomstudio/self-coder"></a>
   <a href="#supported-backends"><img alt="Runtime: LM Studio or Ollama" src="https://img.shields.io/badge/runtime-LM%20Studio%20%7C%20Ollama-2f6f9f"></a>
 </p>
@@ -19,10 +22,11 @@ This repository is the public home for Selfcoder documentation, Marketplace inst
 - Adds a dedicated chat panel for local AI coding sessions.
 - Connects to local models served by LM Studio or Ollama.
 - Supports model-aware workspace context, pinned files, attachments, and chat history.
+- Includes sidepanel slash commands for help, context preview, review, model listing, export, compaction, and project initialization.
 - Integrates with VS Code native chat through the `@Selfcoder` participant.
 - Exposes supported local models to the VS Code model picker.
 - Supports image attachments for vision-capable models.
-- Includes optional OpenCode agent integration for deeper workspace automation.
+- Includes managed OpenCode Agent mode for deeper workspace automation.
 
 <p align="center">
   <img alt="Selfcoder sidepanel demo" src="https://raw.githubusercontent.com/coderoomstudio/self-coder/main/resources/img/general.gif">
@@ -57,6 +61,7 @@ Useful starting points:
 
 - [Getting Started](docs/getting-started.md)
 - [Core Workflows](docs/core-workflows.md)
+- [Slash Commands](docs/slash-commands.md)
 - [Context and Attachments](docs/context-and-attachments.md)
 - [Models and Backends](docs/models-and-backends.md)
 - [Settings and Privacy](docs/settings-and-privacy.md)
@@ -70,3 +75,6 @@ Use [GitHub Issues](https://github.com/coderoomstudio/self-coder/issues) to repo
 
 Use the [Visual Studio Marketplace page](https://marketplace.visualstudio.com/items?itemName=coderoom.Selfcoder) for the current version, installation, and changelog details.
 
+## Website
+
+Visit the [Selfcoder website](https://selfcoder.dev) for the product overview, installation links, and updates.

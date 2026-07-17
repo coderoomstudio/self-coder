@@ -40,6 +40,23 @@ Use the active file and diagnostics to help me fix this error.
 Review my current changes and call out likely regressions.
 ```
 
+## Slash Commands
+
+The sidepanel composer supports slash commands when the first non-empty token starts with `/`.
+
+Useful slash commands:
+
+- `/help` shows the commands available in the current mode.
+- `/context [prompt]` previews the context Selfcoder would include for a request.
+- `/review [focus]` reviews uncommitted workspace changes with the selected model.
+- `/models` lists visible backend models and capabilities.
+- `/export` opens the current conversation as Markdown.
+- `/new` starts a fresh conversation.
+
+Agent mode also supports `/compact`, `/summarize`, `/init`, and custom commands from `.opencode/commands/*.md` in each workspace folder.
+
+See [Slash Commands](slash-commands.md) for the full command list and custom command format.
+
 ## Model Selection
 
 Selfcoder lists chat-capable models reported by the active backend.
@@ -117,6 +134,16 @@ Agent mode adds:
 
 Agent mode runs on the model you select in the sidepanel and the active backend, so agent work stays on your machine. The selected model must support tool use; if it does not, pick a tool-capable model before running the agent.
 
+On first use, Selfcoder downloads and manages a pinned runtime for Agent mode. The download is SHA-256 verified, and cached for later offline use.
+
+Agent permissions are controlled by `Selfcoder.permissionMode`:
+
+| Mode | Behavior |
+| --- | --- |
+| `autonomous` | Runs without permission prompts. |
+| `elevated` | Allows most actions, but asks before destructive commands, `.env` access, external directories, and runaway-loop protection. |
+| `balanced` | Recommended default. Allows normal reads, edits, and basic shell commands while asking before destructive actions, network access, and sensitive file edits. |
+| `restricted` | Asks before most shell commands and blocks more sensitive reads or external-directory access. |
 
 Typical flow:
 

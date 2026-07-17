@@ -41,8 +41,8 @@ All settings are under the `Selfcoder` namespace.
 | `Selfcoder.historyScope` | `global` | Shows all saved conversations or only conversations for the current repository. |
 | `Selfcoder.historyRetention` | `100` | Sets the maximum number of conversations kept in history. |
 | `Selfcoder.contextMode` | `enabled` | Enables or disables automatic editor and workspace context. |
-| `Selfcoder.agent.command` | empty | Explicit path to an OpenCode executable for Agent mode. Overrides the managed binary and PATH detection. |
-| `Selfcoder.agent.autoDownload` | `true` | Automatically download and manage the Agent mode runtime on first use. |
+| `Selfcoder.responseTimeout` | `30` | Response timeout in minutes for both Chat and Agent responses. |
+| `Selfcoder.permissionMode` | `balanced` | Permission tier for Agent mode: `autonomous`, `elevated`, `balanced`, or `restricted`. |
 
 ## Backend URL
 
@@ -90,6 +90,30 @@ Keep the system prompt short enough that it does not waste too much model contex
 
 Even when automatic context is disabled, Selfcoder can still use pinned files, manual attachments, workspace instructions, system prompt, and chat history.
 
+## Response Timeout
+
+`Selfcoder.responseTimeout` sets how long a Chat or Agent response can run before Selfcoder stops it automatically, the same as pressing Stop.
+
+The value is measured in minutes and is clamped from 1 to 1440. The default is 30 minutes.
+
+## Agent Permissions
+
+`Selfcoder.permissionMode` controls which Agent mode actions run immediately and which actions require approval.
+
+| Value | Behavior |
+| --- | --- |
+| `autonomous` | Runs without permission prompts. |
+| `elevated` | Allows almost everything, but asks before destructive or irreversible commands, `.env` access, external directories, and runaway-loop protection. |
+| `balanced` | Recommended default. Lets the agent handle reads, edits, and basic shell commands, while requiring approval for destructive commands, network access, and sensitive file edits. |
+| `restricted` | Asks before most non-allowlisted shell commands, denies reading secrets, and blocks external-directory access. |
+
+File edits are allowed by default in every tier. Agent mode still tracks changes and supports one-click revert for the current session.
+
+## Agent Runtime
+
+Agent mode uses a managed OpenCode runtime. On first Agent use, Selfcoder downloads the platform-matched runtime into extension storage, verifies it, and reuses the cached copy later.
+
+
 ## History
 
 Selfcoder can save completed sidepanel conversations so you can resume them later.
@@ -110,10 +134,13 @@ Workspace instruction files let you define project-specific behavior without rep
 Selfcoder checks for:
 
 1. `local-instruction.md` (or `local-instructions.md`)
-2. `copilot-instructions.md`
-3. `CLAUDE.MD`
+2. `.github/copilot-instructions.md`
+3. `AGENTS.md` (or `AGENTS.MD`)
+4. `CLAUDE.md` (or `CLAUDE.MD`)
 
-Use these files for project rules and stable context that should apply to every request.
+Agent mode also uses deeper discovery and includes instructions from the folders which are closer to the current context, while chat mode uses only the root-level discovery. This allows you to have different instructions for different subfolders in a repository.
+
+Use these files for project rules and stable context that should apply across requests.
 
 ## Sensible Defaults
 
@@ -123,6 +150,7 @@ For most users:
 - keep `contextMode` enabled
 - keep `enableVision` enabled
 - use `medium` reasoning
+- use `balanced` Agent permissions
 - keep history scope as `global` unless you work across many repositories
 
 Switch to stricter settings when you need a narrower, more controlled workflow.

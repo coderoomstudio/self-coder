@@ -75,6 +75,8 @@ If Agent mode does not start:
 - Open a folder or workspace first. Agent mode needs a workspace to act on and is disabled when no folder is open.
 - Select a tool-capable model. Agent mode requires a model that reports tool-use support; if the selected model does not, switch to one that does.
 - Make sure your backend is connected and the model is available.
+- Make sure the first Agent use can reach the internet so Selfcoder can download its managed OpenCode runtime. After the runtime is cached, later Agent sessions can start offline.
+- If permission prompts feel too frequent or too broad, check `Selfcoder.permissionMode`. The default is `balanced`; `elevated` is more permissive, while `restricted` asks more often.
 
 ## Image Attachments Are Rejected
 
@@ -126,5 +128,4 @@ If unsupported, Selfcoder still works as a normal streaming chat.
 ## Reporting An Issue
 
 Open a GitHub issue from the [Issues page](https://github.com/coderoomstudio/self-coder/issues).
-
 
