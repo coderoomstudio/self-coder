@@ -7,10 +7,11 @@ This guide covers common Selfcoder setup and usage issues.
 Check:
 
 1. The selected backend is running.
-2. `Selfcoder.backend` matches your backend: `LMStudio` or `Ollama`.
-3. `Selfcoder.backendURL` points to the correct endpoint.
-4. A local chat model is loaded or available.
+2. `Selfcoder.backend` matches your backend: `LMStudio`, `Ollama`, or `OpenAICompatible`.
+3. `Selfcoder.backendAddress` points to the correct server root or compatible `/v1` base URL.
+4. A chat model is loaded or available.
 5. Your firewall or security software is not blocking local HTTP connections.
+6. `Selfcoder.backendAuthorizationToken` contains the correct bearer token if the server requires one.
 
 Default endpoints:
 
@@ -18,6 +19,8 @@ Default endpoints:
 | --- | --- |
 | LM Studio | `http://localhost:1234` |
 | Ollama | `http://localhost:11434` |
+| OpenAI compatible / vLLM | `http://localhost:8000` |
+| OpenAI compatible / llama.cpp | commonly `http://localhost:8080` |
 
 After fixing the backend, use the Selfcoder reconnect action or reload VS Code.
 
@@ -27,10 +30,12 @@ Possible causes:
 
 - No chat model is installed in LM Studio.
 - Ollama has no local models installed.
-- The backend URL is wrong.
+- The backend address is wrong.
 - The backend is running, but the selected backend setting is wrong.
+- The compatible server's `/v1/models` response does not contain a top-level `data` array with non-empty model IDs.
+- The server rejected model discovery because the bearer token is missing or incorrect.
 - The model is an embedding model, not a chat model.
-- The model was hidden from Selfcoder pickers. (Agent mode doesn't support models without tool capabilities)
+- The model was hidden from Selfcoder pickers. Plan and Agent do not support models that explicitly report no tool capability.
 
 For Ollama, check:
 
@@ -39,6 +44,23 @@ ollama list
 ```
 
 For LM Studio, check that the local server is running and a model is available.
+
+For an OpenAI-compatible server, verify `GET <base-url>/models` directly. Enter only the server root or `/v1` base in `Selfcoder.backendAddress`; do not enter `/v1/models`, because Selfcoder appends the route.
+
+## OpenAI-Compatible Chat Works But Other Features Fail
+
+Plan, Agent, and VS Code native tool flows require the served model and chat template to support OpenAI-style tool calls. The standard `/v1/models` response has no portable tool-capability field, so Selfcoder may make a compatible model selectable even when its actual template cannot call tools.
+
+If ordinary Chat works but a tool workflow fails:
+
+- use a model that supports tool calling
+- enable or select the model's tool-aware chat template on the server
+- check the server logs for malformed or unsupported tool calls
+- verify that the same model handles a streaming `/v1/chat/completions` request with tools
+
+It is normal for a generic compatible backend to show no loaded-model list, pre-warm step, or model-load progress. Those states are not portable in the OpenAI-compatible API.
+
+If the server returns `401` or `403`, set the required bearer token in `Selfcoder.backendAuthorizationToken`. Custom headers such as `x-api-key` are not supported.
 
 ## Model Does Not Appear In The VS Code Model Picker
 
@@ -66,16 +88,16 @@ Check:
 
 If the participant still does not appear, reload VS Code.
 
-## Agent Mode Issues
+## Plan Or Agent Mode Issues
 
-Agent mode runs an autonomous agent (OpenCode) that Selfcoder downloads and manages automatically on first use.
+Plan and Agent run through an OpenCode runtime that Selfcoder downloads and manages automatically on first use.
 
-If Agent mode does not start:
+If Plan or Agent does not start:
 
-- Open a folder or workspace first. Agent mode needs a workspace to act on and is disabled when no folder is open.
-- Select a tool-capable model. Agent mode requires a model that reports tool-use support; if the selected model does not, switch to one that does.
+- Open a folder or workspace first. Both modes need a workspace and are disabled when no folder is open.
+- Select a tool-capable model and chat template. If the selected model explicitly reports no tool support, switch to one that supports it.
 - Make sure your backend is connected and the model is available.
-- Make sure the first Agent use can reach the internet so Selfcoder can download its managed OpenCode runtime. After the runtime is cached, later Agent sessions can start offline.
+- Make sure the first Plan or Agent use can reach the internet so Selfcoder can download its managed OpenCode runtime. After the runtime is cached, later sessions can start offline.
 - If permission prompts feel too frequent or too broad, check `Selfcoder.permissionMode`. The default is `balanced`; `elevated` is more permissive, while `restricted` asks more often.
 
 ## Image Attachments Are Rejected
@@ -128,4 +150,3 @@ If unsupported, Selfcoder still works as a normal streaming chat.
 ## Reporting An Issue
 
 Open a GitHub issue from the [Issues page](https://github.com/coderoomstudio/self-coder/issues).
-

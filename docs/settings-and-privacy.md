@@ -1,19 +1,20 @@
 # Settings And Privacy
 
-Selfcoder is local-first: requests are sent to the backend endpoint you configure, usually LM Studio or Ollama running on your own machine.
+Selfcoder is local-first: requests are sent to the backend address you configure, usually LM Studio, Ollama, vLLM, or llama.cpp running on your own machine.
 
 This page explains the main settings and how they affect behavior.
 
 ## Privacy Model
 
-By default, Selfcoder sends chat requests to your configured backend URL.
+By default, Selfcoder sends model requests to your configured backend address.
 
 For a typical local setup, that means:
 
 - LM Studio at `http://localhost:1234`, or
-- Ollama at `http://localhost:11434`
+- Ollama at `http://localhost:11434`, or
+- an OpenAI-compatible server at `http://localhost:8000`
 
-If you configure `Selfcoder.backendURL` to point to a remote server, requests go to that server. Treat the backend URL as the boundary for where prompts, attached files, and selected workspace context are sent.
+If you configure `Selfcoder.backendAddress` to point to a remote server, requests go to that server. Treat the backend address as the boundary for where prompts, attached files, selected workspace context, and tool-call results are sent.
 
 ## Privacy Protection Mode
 
@@ -24,7 +25,7 @@ If you configure `Selfcoder.backendURL` to point to a remote server, requests go
 | `standard` | Enables native VS Code chat integrations and normal Selfcoder model listings. |
 | `strict` | Disables native chat integrations and hides cloud-tagged models from Selfcoder model lists when that metadata is available. |
 
-Use `strict` when you want to keep Selfcoder completely local and avoid any potential data sharing with VS Code's native chat features or cloud-tagged models.
+Use `strict` when you want to avoid potential data sharing with VS Code's native chat features or models tagged as cloud-hosted. This setting cannot infer whether an arbitrary OpenAI-compatible address is local or remote; verify the address yourself.
 
 ## Main Settings
 
@@ -32,8 +33,9 @@ All settings are under the `Selfcoder` namespace.
 
 | Setting | Default | What it does |
 | --- | --- | --- |
-| `Selfcoder.backend` | `LMStudio` | Selects the active backend: `LMStudio` or `Ollama`. |
-| `Selfcoder.backendURL` | backend default | Sets the backend server URL. |
+| `Selfcoder.backend` | `LMStudio` | Selects `LMStudio`, `Ollama`, or `OpenAICompatible`. |
+| `Selfcoder.backendAddress` | backend default | Sets the backend server address. Compatible addresses may be a server root or end in `/v1`. |
+| `Selfcoder.backendAuthorizationToken` | empty | Sends an optional bearer token to the selected backend. Machine-scoped, but stored as an ordinary unmasked setting. |
 | `Selfcoder.privacyProtection` | `standard` | Controls native chat integration and cloud-tagged model visibility. |
 | `Selfcoder.systemPrompt` | helpful coding assistant prompt | Sets the base instruction sent with requests. |
 | `Selfcoder.enableVision` | `enabled` | Enables image attachment support for vision-capable models. |
@@ -41,12 +43,12 @@ All settings are under the `Selfcoder` namespace.
 | `Selfcoder.historyScope` | `global` | Shows all saved conversations or only conversations for the current repository. |
 | `Selfcoder.historyRetention` | `100` | Sets the maximum number of conversations kept in history. |
 | `Selfcoder.contextMode` | `enabled` | Enables or disables automatic editor and workspace context. |
-| `Selfcoder.responseTimeout` | `30` | Response timeout in minutes for both Chat and Agent responses. |
-| `Selfcoder.permissionMode` | `balanced` | Permission tier for Agent mode: `autonomous`, `elevated`, `balanced`, or `restricted`. |
+| `Selfcoder.responseTimeout` | `30` | Response timeout in minutes for Chat, Plan, and Agent responses. |
+| `Selfcoder.permissionMode` | `balanced` | Permission tier for Plan and Agent: `autonomous`, `elevated`, `balanced`, or `restricted`. |
 
-## Backend URL
+## Backend Address And Authentication
 
-Use `Selfcoder.backendURL` when your backend is not running on the default address.
+Use `Selfcoder.backendAddress` when your backend is not running on the default address.
 
 Examples:
 
@@ -59,10 +61,20 @@ http://localhost:11434
 ```
 
 ```text
-http://192.168.1.20:1234
+http://localhost:8000
 ```
 
-Make sure the endpoint matches the selected backend.
+```text
+http://localhost:8080/v1
+```
+
+Make sure the address matches the selected backend. For `OpenAICompatible`, Selfcoder accepts either the server root or its `/v1` base and then calls `/models` and `/chat/completions` itself. Do not enter a complete route such as `/v1/models`.
+
+If you previously set a custom `Selfcoder.backendURL`, copy that value to `Selfcoder.backendAddress` after upgrading. The old key is no longer used.
+
+Set `Selfcoder.backendAuthorizationToken` only when the selected server requires bearer authentication. Selfcoder sends it as `Authorization: Bearer <token>` to LM Studio, Ollama, or an OpenAI-compatible backend. Blank values omit the header.
+
+The setting has machine scope to reduce accidental Settings Sync or repository sharing, but VS Code does not encrypt or password-mask it. Keep real tokens out of workspace settings, screenshots, and checked-in examples. Selfcoder keeps the raw token out of the generated OpenCode configuration and does not pass it to terminal commands started by the model. Selfcoder does not currently support custom authentication headers.
 
 ## System Prompt
 
@@ -92,13 +104,13 @@ Even when automatic context is disabled, Selfcoder can still use pinned files, m
 
 ## Response Timeout
 
-`Selfcoder.responseTimeout` sets how long a Chat or Agent response can run before Selfcoder stops it automatically, the same as pressing Stop.
+`Selfcoder.responseTimeout` sets how long a Chat, Plan, or Agent response can run before Selfcoder stops it automatically, the same as pressing Stop.
 
 The value is measured in minutes and is clamped from 1 to 1440. The default is 30 minutes.
 
-## Agent Permissions
+## Plan And Agent Permissions
 
-`Selfcoder.permissionMode` controls which Agent mode actions run immediately and which actions require approval.
+`Selfcoder.permissionMode` controls which Agent actions run immediately and which Plan or Agent actions require approval.
 
 | Value | Behavior |
 | --- | --- |
@@ -107,11 +119,13 @@ The value is measured in minutes and is clamped from 1 to 1440. The default is 3
 | `balanced` | Recommended default. Lets the agent handle reads, edits, and basic shell commands, while requiring approval for destructive commands, network access, and sensitive file edits. |
 | `restricted` | Asks before most non-allowlisted shell commands, denies reading secrets, and blocks external-directory access. |
 
-File edits are allowed by default in every tier. Agent mode still tracks changes and supports one-click revert for the current session.
+In Agent mode, file edits are allowed by default in every tier, change tracking remains active, and the current session supports one-click revert.
 
-## Agent Runtime
+Plan starts with the selected tier's read rules, but hard-denies file changes, terminal commands, delegated work, and model-controlled exit into Agent in every tier. For example, `balanced` Plan can ask before a web request or external-directory read, but approving that request cannot unlock editing or terminal access. See [Plan Mode](plan-mode.md) for the full safety model.
 
-Agent mode uses a managed OpenCode runtime. On first Agent use, Selfcoder downloads the platform-matched runtime into extension storage, verifies it, and reuses the cached copy later.
+## Plan And Agent Runtime
+
+Plan and Agent use a managed OpenCode runtime. On first use, Selfcoder downloads the platform-matched runtime into extension storage, verifies it, and reuses the cached copy later.
 
 
 ## History

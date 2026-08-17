@@ -1,6 +1,6 @@
 # Models And Backends
 
-Selfcoder connects VS Code to local models served by LM Studio or Ollama. The extension does not require one specific model. You choose the backend and model that fit your machine, task, and preferred workflow.
+Selfcoder connects VS Code to models served by LM Studio, Ollama, or an OpenAI Chat Completions-compatible endpoint. The extension does not require one specific model. You choose the backend and model that fit your machine, task, and preferred workflow.
 
 ## Supported Backends
 
@@ -8,10 +8,13 @@ Selfcoder connects VS Code to local models served by LM Studio or Ollama. The ex
 | --- | --- | --- |
 | [LM Studio](https://lmstudio.ai/download) | `http://localhost:1234` | Visual model management, local server controls, model metadata, OpenAI-compatible APIs. |
 | [Ollama](https://ollama.com/download) | `http://localhost:11434` | CLI-driven model management, simple local runtime, reproducible model pulls. |
+| OpenAI compatible | `http://localhost:8000` | [vLLM](https://vllm.ai/), [llama.cpp](https://llama.app/), and other servers that expose `/v1/models` and streaming `/v1/chat/completions`. |
 
 Change the active backend with `Selfcoder.backend`.
 
-Change the backend address with `Selfcoder.backendURL` if your server is not using the default endpoint.
+Change the backend address with `Selfcoder.backendAddress` if your server is not using the default endpoint.
+
+If the selected server requires bearer authentication, set `Selfcoder.backendAuthorizationToken`. The token applies to model discovery and chat requests for all three backend choices, including authenticated LM Studio or Ollama proxies.
 
 ## Choosing A Model
 
@@ -64,6 +67,48 @@ ollama pull qwen2.5-coder:7b
 
 Selfcoder can use Ollama's native chat API and OpenAI-compatible endpoints where appropriate.
 
+## OpenAI-Compatible Servers
+
+Choose the `OpenAICompatible` backend to connect vLLM, llama.cpp, or another compatible server.
+
+Selfcoder expects:
+
+- `GET <base-url>/models`, returning an OpenAI-style top-level `data` array with non-empty model IDs
+- streaming `POST <base-url>/chat/completions`
+- OpenAI-style tool calls from the model and chat template when you use Plan, Agent, or VS Code native tool flows
+
+Set `Selfcoder.backendAddress` to either the server root or a base URL ending in `/v1`. Selfcoder normalizes both forms:
+
+| Server | Server root | Equivalent `/v1` value |
+| --- | --- | --- |
+| vLLM | `http://localhost:8000` | `http://localhost:8000/v1` |
+| llama.cpp | `http://localhost:8080` | `http://localhost:8080/v1` |
+| Other compatible server | Its configured host and port | The same address ending in `/v1` |
+
+Minimal VS Code `settings.json` example for vLLM:
+
+```json
+{
+  "Selfcoder.backend": "OpenAICompatible",
+  "Selfcoder.backendAddress": "http://localhost:8000"
+}
+```
+
+For llama.cpp, change the address to the port used by your server, commonly `http://localhost:8080`.
+
+When bearer authentication is required, add the machine-scoped token setting in your user settings:
+
+```json
+{
+  "Selfcoder.backend": "OpenAICompatible",
+  "Selfcoder.backendAddress": "https://models.example.com/v1",
+  "Selfcoder.backendAuthorizationToken": "your-token"
+}
+```
+
+The generic compatible API has no portable way to report whether a model is currently loaded, so Selfcoder does not show loaded-model status, warm-up progress, or pre-warm generic models. It also has no portable tool-capability field. Selfcoder exposes compatible chat models optimistically to tool workflows unless recognized metadata explicitly says otherwise, but the model and server chat template must still produce valid tool calls.
+
+
 ## Model Capabilities
 
 Selfcoder filters and displays models based on backend metadata.
@@ -94,14 +139,16 @@ The exact behavior depends on what the selected backend and model support. If a 
 
 ## Tool-Capable Models
 
-Tool support matters most for VS Code native model picker and Agent workflows.
+Tool support matters most for Plan, Agent, and VS Code native model-picker workflows.
 
-If a model appears in the Selfcoder sidepanel but not in VS Code's native model picker, it may not report tool support. Use another model or check the backend metadata.
+If an LM Studio or Ollama model appears in Chat but not in Plan, Agent, or VS Code's native model picker, it may not report tool support. Use another model or check the backend metadata.
+
+OpenAI-compatible model lists do not define a portable tool-support field, so Selfcoder normally makes those chat models selectable. Selection alone cannot add tool support: if Plan or Agent fails while normal Chat works, use a model and server chat template that support OpenAI-style tool calls.
 
 ## Practical Model Tips
 
 - For quick explanations, use a smaller coding model.
 - For larger refactors, use a larger model with more context.
 - For UI screenshots, choose a vision-capable model.
-- For Agent mode, choose a tool-capable model.
+- For Plan or Agent mode, choose a tool-capable model 
 - For long conversations, watch the token indicator and start a new chat when the topic shifts.

@@ -101,7 +101,7 @@ It looks for the first matching instruction file in this priority order:
 3. `AGENTS.md` (or `AGENTS.MD`)
 4. `CLAUDE.md` (or `CLAUDE.MD`)
 
-Agent mode also uses deeper discovery and includes instructions from the folders which are closer to the current context, while chat mode uses only the root-level discovery. This allows you to have different instructions for different subfolders in a repository.
+Plan and Agent also use deeper discovery and include instructions from folders closer to the current context, while Chat uses only root-level discovery. This allows you to have different instructions for different subfolders in a repository.
 
 Use workspace instructions for stable project rules, such as:
 
