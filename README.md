@@ -1,8 +1,8 @@
 # Selfcoder
 
-**A local and self-hosted AI coding assistant for VS Code, powered by your model endpoint.**
+**A self-hosted AI coding assistant for VS Code that works with LM Studio, Ollama, vLLM, llama.cpp, and more.**
 
-Selfcoder brings Chat, read-only planning, and autonomous coding workflows into Visual Studio Code. Connect LM Studio, Ollama, vLLM, llama.cpp, or another OpenAI Chat Completions-compatible server and choose the model that fits your machine and workflow.
+Selfcoder brings chat, planning, and autonomous coding workflows into Visual Studio Code. Connect LM Studio, Ollama, vLLM, llama.cpp, or another OpenAI compatible backend and choose the model that fits your hardware.
 
 This repository is the public home for Selfcoder documentation, Marketplace installation details, and issue tracking.
 
